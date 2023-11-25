@@ -1,0 +1,31 @@
+.Auth-container{
+    background-image: url(assets/images/da87cd52923ebecef90e1f43751cfebc.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+.bg-overlay{
+    background: linear-gradient(to left ,rgba(0,0,0,0.4), rgba(47,140,51,0.7));
+  
+}
+
+.Auth-paragraph{
+    color: #888;
+}
+.error {
+    color: red
+}
+.style-icon{
+    position: absolute;
+    top: 26%;
+    left: 2%;
+    z-index: 3;
+}
+.border-sidebar{
+    border-top-right-radius :2rem;
+    border-bottom-right-radius :2rem
+
+}
+
+.bg-side{
+    background-color:#1F263E !important
+}
