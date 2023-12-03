@@ -7,18 +7,20 @@ import { HiUsers } from "react-icons/hi";
 import { MdFastfood } from "react-icons/md";
 import { FaUnlockAlt } from "react-icons/fa";
 import { IoLogOutOutline } from "react-icons/io5";
-import logo from '../../../assets/images/4 3.png'
+import logo from '../../../assets/images/3.png'
 import { RxHamburgerMenu } from "react-icons/rx";
+import Modal from 'react-bootstrap/Modal';
+import Changepass from '../../../AuthModule/Components/Change-Pass/Changepass'
+import { BiSolidCategory } from "react-icons/bi";
 
 
 function SideBar({ adminData }) {
 
-  const [isCollapse,setIsCollapse] = useState(false);
+  const [isCollapse, setIsCollapse] = useState(false);
 
-  const collapsed = () =>{
-      setIsCollapse(!isCollapse)
-    }
-  
+  const collapsed = () => {
+    setIsCollapse(!isCollapse)
+  }
 
   const navigate = useNavigate()
   const logout = () => {
@@ -26,21 +28,38 @@ function SideBar({ adminData }) {
     navigate("/login")
   }
 
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+
   return (
-    <ProSidebarProvider >
-      <Sidebar defaultCollapsed={isCollapse} className='vh-100 bg-side border-sidebar '>
-        <Menu>
-        <MenuItem onClick={collapsed} icon={<RxHamburgerMenu />}> </MenuItem>
+    <div className="sidebar-container">
+
+      <Modal show={show} onHide={handleClose}>
+
+        <Changepass handleClose={handleClose} />
+
+      </Modal>
 
 
-          <MenuItem icon={<TiHome />} component={<Link to="/dashboard" />}>  Home </MenuItem>
-          <MenuItem icon={<HiUsers />}  component={<Link to="/dashboard/users" />}>  Users </MenuItem>
-          <MenuItem icon={< MdFastfood />} component={<Link to="/dashboard/recipes" />}> recipes </MenuItem>
-          <MenuItem icon={<FaUnlockAlt />} component={<Link to="/dashboard/Change-pass" />}> change password </MenuItem>
-          <MenuItem icon={<IoLogOutOutline />} onClick={logout}>  Log out </MenuItem>
-        </Menu>
-      </Sidebar>
-    </ProSidebarProvider>
+      <ProSidebarProvider >
+        <Sidebar defaultCollapsed={isCollapse} className='vh-100 border-sidebar position-fixed'>
+          <Menu>
+            <MenuItem onClick={collapsed} icon={< RxHamburgerMenu />}> </MenuItem>
+            {/* {<img className='w-img' src={logo}/>} */}
+
+            <MenuItem icon={<TiHome />} component={<Link to="/dashboard" />}>  Home </MenuItem>
+            <MenuItem icon={<HiUsers />} component={<Link to="/dashboard/users" />}>  Users </MenuItem>
+            <MenuItem icon={< MdFastfood />} component={<Link to="/dashboard/recipes" />}> recipes </MenuItem>
+            <MenuItem icon={<BiSolidCategory />} component={<Link to="/dashboard/categories" />}> Categories </MenuItem>
+            <MenuItem icon={<FaUnlockAlt />} onClick={handleShow}> change password </MenuItem>
+            <MenuItem icon={<IoLogOutOutline />} onClick={logout}>  Log out </MenuItem>
+          </Menu>
+        </Sidebar>
+      </ProSidebarProvider>
+    </div>
   )
 }
 

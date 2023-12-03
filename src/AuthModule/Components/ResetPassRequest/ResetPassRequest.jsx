@@ -18,7 +18,7 @@ function ResetPassRequest() {
     
       const onSubmit = (data) => {
         console.log(data)
-        axios.post("http://upskilling-egypt.com:3002/api/v1/Users/Reset/Request", data,
+        axios.post("https://upskilling.com:3002/api/v1/Users/Reset/Request", data,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('adminToken')}`

@@ -21,7 +21,7 @@ function Login({ saveAdminData }) {
 
   const onSubmit = (data) => {
     console.log(data)
-    axios.post("http://upskilling-egypt.com:3002/api/v1/Users/Login", data)
+    axios.post("https://upskilling.com:443/api/v1/Users/Login", data)
       .then((response) => {
         console.log(response.data.token);
         localStorage.setItem("adminToken", response.data.token);
@@ -42,7 +42,7 @@ function Login({ saveAdminData }) {
 
       })
       .catch((error) => {
-        toast.error(error.response.data.message, {
+        toast.error(error.response, {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,

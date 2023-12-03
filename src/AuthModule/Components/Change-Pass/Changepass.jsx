@@ -1,13 +1,13 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import logo from '../../../assets/images/4 3.png'
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { CiLock } from "react-icons/ci";
 
 
-function Changepass() {
+function Changepass({handleClose}) {
 
   const {
     register,
@@ -18,7 +18,7 @@ function Changepass() {
   const onSubmit = (data) => {
     console.log(data);
     console.log(localStorage.getItem('adminToken'))
-    axios.put("http://upskilling-egypt.com:3002/api/v1/Users/changePassword", data,
+    axios.put("https://upskilling.com:3002/api/v1/Users/changePassword", data,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('adminToken')}`
@@ -26,10 +26,21 @@ function Changepass() {
       })
       .then((response) => {
         console.log(response);
-        navigate('/login')
+        handleClose();
+        toast.success(`your password apdated successfully`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        })
+      
       })
       .catch((error) => {
-        toast.warn(error.response.data.message, {
+        toast.error(error.response.data.message, {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -47,9 +58,6 @@ function Changepass() {
   return (
     <>
 
-      <div className='container-fluid Auth-container'>
-        <div className="row bg-overlay align-items-center justify-content-center vh-100">
-          <div className="col-md-6">
             <div className="bg-white">
               <div className="Auth-img w-50 m-auto pt-5">
                 <img className='w-100' src={logo} alt="logo" />
@@ -115,9 +123,7 @@ function Changepass() {
                 </form>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
+        
 
     </>
   )

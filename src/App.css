@@ -20,12 +20,35 @@
     left: 2%;
     z-index: 3;
 }
-.border-sidebar{
+
+.ps-sidebar-container{
+    background-color:#1F263E !important;
+    color: #fff;
     border-top-right-radius :2rem;
     border-bottom-right-radius :2rem
-
 }
 
-.bg-side{
-    background-color:#1F263E !important
+.sidebar-container .ps-sidebar-root{
+    border-top-right-radius :2rem;
+    border-bottom-right-radius :2rem
+}
+.sidebar-container .css-16jkw2k .ps-menu-button:hover{
+ background-color: rgba(0, 146, 71, 0.1);
+}
+.sidebar-container .w-img{
+    height: 75%;
+}
+.navbar{
+    border-radius: 0.6rem;
+    margin-top: 1rem;
+}
+.navbar-collapse{
+    padding: 0 1rem 0 0;
+}
+.header{
+    border-radius: 0.6rem;
+    margin: 1rem 0;
+    background-image: url(../src/assets/images/Rectangle.png);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
 }

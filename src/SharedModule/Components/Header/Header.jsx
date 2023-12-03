@@ -1,8 +1,13 @@
 import React from 'react'
 
-function Header() {
+function Header({children}) {
   return (
-    <div>Header</div>
+    <>
+
+     {children}
+
+
+    </>
   )
 }
 
