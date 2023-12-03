@@ -2,7 +2,6 @@
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.js'
-// import 'font-awesome-icons'
 import Login from './AuthModule/Components/Login/Login'
 import Changepass from './AuthModule/Components/Change-Pass/Changepass'
 import Categories from './CategoriesModule/Components/Categories/Categories'
@@ -31,7 +30,6 @@ function App() {
     let decodedToken = jwtDecode(incodedToken)
     console.log(decodedToken);
     setadminData(decodedToken);
-    // console.log(adminData);
   }
 
   useEffect(() => {
