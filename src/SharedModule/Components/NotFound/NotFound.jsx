@@ -1,8 +1,8 @@
 import React from 'react'
-
+import { Link } from 'react-router-dom'
 function NotFound() {
   return (
-    <div>NotFound .....</div>
+    <Link to="/">Go To Home </Link>
   )
 }
 
