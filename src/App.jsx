@@ -42,8 +42,8 @@ function App() {
     {
       path: "dashboard",
       element: <ProtectedRoute adminData={adminData} >
-        <MasterLayout  adminData={adminData}  />
-        </ProtectedRoute>,
+        <MasterLayout adminData={adminData} />
+      </ProtectedRoute>,
       errorElement: <NotFound />,
       children: [
         { index: true, element: <Home /> },
@@ -53,27 +53,27 @@ function App() {
         { path: "Change-pass", element: <Changepass /> },
       ],
 
-    }, 
+    },
     {
       path: "/",
       element:
         // <ProtectedRoute adminData={adminData}>
-          <AuthLayout  />
-        // </ProtectedRoute>
-        ,
+        <AuthLayout />
+      // </ProtectedRoute>
+      ,
       errorElement: <NotFound />,
       children: [
         { index: true, element: <Login saveAdminData={saveAdminData} /> },
         { path: "login", element: <Login saveAdminData={saveAdminData} /> },
         { path: "reset-pass-request", element: <ResetPassRequest /> },
         { path: "reset-pass", element: <ResetPass /> }
-        
+
       ],
     },
   ]);
   return (
     <>
- <ToastContainer />
+      <ToastContainer />
       <RouterProvider router={routes} />
     </>
   );

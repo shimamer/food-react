@@ -16,6 +16,12 @@ function Recipes() {
 
   const [recipesList, setRecipesList] = useState()
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue
+  } = useForm()
 
   const getRecipes = () => {
     axios.get('https://upskilling-egypt.com:443/api/v1/Recipe/',
@@ -26,6 +32,34 @@ function Recipes() {
       })
       .then((response) => {
         setRecipesList(response.data.data)
+      })
+      .catch((error) => console.log(error))
+  }
+
+  const [tagsList, setTagsList] = useState()
+  const getTags = () => {
+    axios.get('https://upskilling-egypt.com:443/api/v1/tag/',
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('adminToken')}`
+        }
+      })
+      .then((response) => {
+        setTagsList(response.data)
+      })
+      .catch((error) => console.log(error))
+  }
+
+  const [categoriesList, setCategoriesList] = useState()
+  const getCategories = () => {
+    axios.get('https://upskilling-egypt.com:443/api/v1/Category/',
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('adminToken')}`
+        }
+      })
+      .then((response) => {
+        setCategoriesList(response.data.data)
       })
       .catch((error) => console.log(error))
   }
@@ -43,16 +77,150 @@ function Recipes() {
 
   const handleShowAdd = () => {
     setShowState('add-state');
+    getTags()
+    getCategories()
   }
 
   const handleShowDelete = (id) => {
     setShowState('delete-state');
     setItemID(id)
   }
+
   const handleShowUpdate = (RecipeItem) => {
     setShowState('update-state');
+    getTags()
+    getCategories()
+
     setItemID(RecipeItem.id);
-    // setValue("name", RecipeItem.name)
+    setValue("name", RecipeItem.name)
+    setValue("description", RecipeItem.description)
+    setValue("price", RecipeItem.price)
+    setValue("recipeImage", RecipeItem.imagePath)
+    setValue("tagId", RecipeItem.tag.id)
+    setValue("categoriesIds", RecipeItem.category[0].id)
+  }
+
+  const deleteRecipe = () => {
+    axios.delete(`https://upskilling-egypt.com:443/api/v1/Recipe/${itemID}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('adminToken')}`
+      }
+    }).then((response) => {
+      console.log(response);
+      handleClose();
+      getRecipes()
+      toast.success(`Recipe deleted successfully`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      })
+    }).catch((error) => {
+      console.log(error);
+      toast.error(error.response.data.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      })
+    }
+    )
+  }
+
+  const onSubmit = (data) => {
+    console.log(data);
+
+    const addFormData = new FormData();
+    addFormData.append("name", data['name'])
+    addFormData.append("description", data['description'])
+    addFormData.append("price", data['price'])
+    addFormData.append("recipeImage", data['recipeImage'][0])
+    addFormData.append("tagId", data['tagId'])
+    addFormData.append("categoriesIds", data['categoriesIds'])
+    console.log(addFormData);
+    axios.post('https://upskilling-egypt.com:443/api/v1/Recipe/', addFormData, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('adminToken')}`
+      }
+    }).then((res) => {
+      console.log(res);
+      handleClose()
+      getRecipes()
+
+      toast.success(`Recipe added successfully`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      })
+
+      setValue('name')
+      setValue('description')
+      setValue('tagId')
+      setValue('price')
+      setValue('categoriesIds')
+      setValue('recipeImage')
+    })
+      .catch((error) => {
+        console.log(error)
+        toast.error(error.response.data.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        })
+      })
+  }
+
+  const updateRecipe = (data) => {
+    axios.put(`https://upskilling-egypt.com:443/api/v1/Recipe/${itemID}`, data,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('adminToken')}`
+        }
+      }).then((response) => {
+        console.log(response);
+        handleClose();
+        getRecipes()
+        toast.success(`Recipe Updated successfully`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        })
+      }).catch((error) => {
+        console.log(error);
+        toast.error(error.response.data.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        })
+      })
   }
 
   return (
@@ -77,19 +245,96 @@ function Recipes() {
           <h3>Add Recipe</h3>
 
           <form action="" onSubmit={handleSubmit(onSubmit)}>
+
             <div className='form-group'>
               <input type="text"
                 className='form-control my-2'
-                placeholder='Category Name'
+                placeholder='Recipe Name'
                 {...register("name",
                   {
                     required: true
                   })} />
               {errors.name && errors.name.type === "required" && <span className='text-danger'>Feild is required</span>}
             </div>
+
             <div className='form-group'>
-              <button className='btn btn-success w-100'>Save</button>
+              <textarea type="text"
+                className='form-control my-2'
+                placeholder='Description'
+                {...register("description",
+                  {
+                    required: true
+                  })} ></textarea>
+              {errors.description && errors.description.type === "required" && <span className='text-danger'>Feild is required</span>}
             </div>
+
+            <div className='form-group'>
+              <input type="number"
+                className='form-control my-2'
+                placeholder='price'
+                {...register("price",
+                  {
+                    required: true,
+                    valueAsNumber: true
+                  })} />
+              {errors.price && errors.price.type === "required" && <span className='text-danger'>Feild is required</span>}
+            </div>
+
+            <div className='form-group'>
+              <select
+                className=' my-2 form-select'
+                {...register("tagId",
+                  {
+                    required: true,
+                    valueAsNumber: true
+                  })} >
+                <option value="" selected disabled> select tag</option>
+                {
+                  tagsList?.map((tag, index) => {
+                    return (
+                      <option key={index} value={tag.id}>{tag.id}</option>
+                    )
+                    // console.log(tag.id);
+                  })
+                }
+              </select>
+              {errors.tagId && errors.tagId.type === "required" && <span className='text-danger'>Feild is required</span>}
+            </div>
+
+            <div className='form-group'>
+              <select
+                className=' my-2 form-select'
+                {...register("categoriesIds",
+                  {
+                    required: true,
+                    valueAsNumber: true
+                  })} >
+
+                <option value="" selected disabled> select category</option>
+
+                {
+                  categoriesList?.map((category, index) => {
+                    return (
+                      <option key={index} value={category.id}>{category.name}</option>
+                    )
+                    // console.log(category.id);
+                  })
+                }
+
+              </select>
+              {errors.categoriesIds && errors.categoriesIds.type === "required" && <span className='text-danger'>Feild is required</span>}
+            </div>
+
+            <div className='form-group'>
+              <input type="file"
+                className='form-control my-2'
+                {...register("recipeImage")} />
+            </div>
+
+            <div className='form-group'>
+              <button className='btn btn-success w-100 my-2'>Save</button>
+            </div>
+
           </form>
 
         </ModalBody>
@@ -99,37 +344,121 @@ function Recipes() {
 
       <Modal show={showState == 'delete-state'} onHide={handleClose}>
         <ModalBody>
-          <div>delete</div>
-          {/* <div className='text-center'>
+          <div className='text-center'>
             <img src={noData} alt="" />
-            <h4 className='mt-2'>Delete This Category ?</h4>
+            <h4 className='mt-2'>Delete This Recipe ?</h4>
             <p className='text-muted p-2'>are you sure you want to delete this item? if you are sure just click on delete it</p>
             <hr className='text-muted w-75 m-auto' />
             <div className='d-flex justify-content-end mt-3'>
-              <button className='btn btn-outline-danger' onClick={deleteCategory}>Delete this item</button>
+              <button className='btn btn-outline-danger' onClick={deleteRecipe}>Delete this item</button>
             </div>
-          </div> */}
+          </div>
         </ModalBody>
       </Modal>
 
       <Modal show={showState == 'update-state'} onHide={handleClose}>
         <ModalBody>
           <h3>Update Recipe</h3>
-          {/* <form action="" onSubmit={handleSubmit(updateCategory)}>
+
+          <form action="" onSubmit={handleSubmit(updateRecipe)}>
+
             <div className='form-group'>
               <input type="text"
                 className='form-control my-2'
-                placeholder='Category Name'
+                placeholder='Recipe Name'
                 {...register("name",
                   {
                     required: true
                   })} />
               {errors.name && errors.name.type === "required" && <span className='text-danger'>Feild is required</span>}
             </div>
+
             <div className='form-group'>
-              <button className='btn btn-success w-100'>Update</button>
+              <textarea type="text"
+                className='form-control my-2'
+                placeholder='Description'
+                {...register("description",
+                  {
+                    required: true
+                  })} ></textarea>
+              {errors.description && errors.description.type === "required" && <span className='text-danger'>Feild is required</span>}
             </div>
-          </form> */}
+
+            <div className='form-group'>
+              <input type="number"
+                className='form-control my-2'
+                placeholder='price'
+                {...register("price",
+                  {
+                    required: true,
+                    valueAsNumber: true
+                  })} />
+              {errors.price && errors.price.type === "required" && <span className='text-danger'>Feild is required</span>}
+            </div>
+
+            <div className='form-group'>
+              <select
+                className=' my-2 form-select'
+                {...register("tagId",
+                  {
+                    required: true,
+                    valueAsNumber: true
+                  })} >
+                <option value="" selected disabled> select tag</option>
+                {
+                  tagsList?.map((tag, index) => {
+                    return (
+                      <option key={index} value={tag.id}>{tag.id}</option>
+                    )
+                    // console.log(tag.id);
+                  })
+                }
+              </select>
+              {errors.tagId && errors.tagId.type === "required" && <span className='text-danger'>Feild is required</span>}
+            </div>
+
+            <div className='form-group'>
+              <select
+                className=' my-2 form-select'
+                {...register("categoriesIds",
+                  {
+                    required: true,
+                    valueAsNumber: true
+                  })} >
+
+                <option value="" selected disabled> select category</option>
+
+                {
+                  categoriesList?.map((category, index) => {
+                    return (
+                      <option key={index} value={category.id}>{category.name}</option>
+                    )
+                    // console.log(category.id);
+                  })
+                }
+
+              </select>
+              {errors.categoriesIds && errors.categoriesIds.type === "required" && <span className='text-danger'>Feild is required</span>}
+            </div>
+
+            <div className='form-group'>
+              <input type="file"
+                className='form-control my-2'
+                {...register("recipeImage")} />
+              {/* {
+                Recipe.imagePath ? <img className='width-img'
+                  src={`https://upskilling-egypt.com/` + Recipe?.imagePath}
+                  alt="" /> : <img className='width-img'
+                    src={noData}
+                    alt="" />
+              } */}
+            </div>
+
+            <div className='form-group'>
+              <button className='btn btn-success w-100 my-2'>Save</button>
+            </div>
+
+          </form>
         </ModalBody>
 
 
@@ -171,19 +500,27 @@ function Recipes() {
                   recipesList?.map((Recipe, index) => {
                     return (
                       <tr key={index}>
-                        <th scope="row">{Recipe.id}</th>
+                        <th scope="row">{index + 1}</th>
                         <td>{Recipe.name}</td>
-                        <td scope="col">Image</td>
-                        <td scope="col">Price</td>
-                        <td scope="col">Discription</td>
-                        <td scope="col">Category</td>
-                        <td scope="col">Tag</td>
+                        <td scope="col">
+                          {
+                            Recipe.imagePath ? <img className='width-img'
+                              src={`https://upskilling-egypt.com/` + Recipe?.imagePath}
+                              alt="" /> : <img className='width-img'
+                                src={noData}
+                                alt="" />
+                          }                        </td>
+                        <td scope="col">{Recipe.price}</td>
+                        <td scope="col">{Recipe.description}</td>
+                        <td scope="col">{Recipe.category[0]?.name}</td>
+                        <td scope="col">{Recipe.tag.name}</td>
                         <td>
                           <MdEditSquare onClick={() => handleShowUpdate(Recipe)} className='text-warning me-2' />
                           <MdDelete onClick={() => handleShowDelete(Recipe.id)} className='text-danger' />
                         </td>
                       </tr>
                     )
+                    // console.log(Recipe);
                   })
                 }
 

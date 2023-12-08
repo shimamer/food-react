@@ -66,8 +66,7 @@ function Changepass({handleClose}) {
                 <h3>Change Password</h3>
                 <p className='Auth-paragraph'>inter your details below</p>
                 <form action="" onSubmit={handleSubmit(onSubmit)}>
-                  <ToastContainer />
-
+               
                   <div className="form-group mt-3 position-relative">
                   <CiLock className='style-icon'/> 
 
