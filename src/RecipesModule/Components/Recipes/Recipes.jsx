@@ -15,6 +15,10 @@ import { MdDelete } from "react-icons/md";
 function Recipes() {
 
   const [recipesList, setRecipesList] = useState()
+  const [pageArray, setPageArray] = useState()
+  const [searchString, setSearchString] = useState()
+  const [searchTag, setSearchTag] = useState()
+  const [searchCategory, setSearchCategory] = useState()
 
   const {
     register,
@@ -23,14 +27,24 @@ function Recipes() {
     setValue
   } = useForm()
 
-  const getRecipes = () => {
+  const getRecipes = (pageNo, name, tagId, categoryId) => {
     axios.get('https://upskilling-egypt.com:443/api/v1/Recipe/',
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('adminToken')}`
+        },
+        params:
+        {
+          pageSize: 5,
+          pageNumber: pageNo,
+          name: name,
+          tagId: tagId,
+          categoryId: categoryId
         }
       })
       .then((response) => {
+
+        setPageArray(Array(response.data.totalNumberOfPages).fill().map((_, i) => i + 1))
         setRecipesList(response.data.data)
       })
       .catch((error) => console.log(error))
@@ -65,7 +79,9 @@ function Recipes() {
   }
 
   useEffect(() => {
-    getRecipes()
+    getRecipes(1)
+    getTags()
+    getCategories()
   }, [])
 
   const [showState, setShowState] = useState('close');
@@ -77,8 +93,6 @@ function Recipes() {
 
   const handleShowAdd = () => {
     setShowState('add-state');
-    getTags()
-    getCategories()
   }
 
   const handleShowDelete = (id) => {
@@ -88,8 +102,6 @@ function Recipes() {
 
   const handleShowUpdate = (RecipeItem) => {
     setShowState('update-state');
-    getTags()
-    getCategories()
 
     setItemID(RecipeItem.id);
     setValue("name", RecipeItem.name)
@@ -223,6 +235,21 @@ function Recipes() {
       })
   }
 
+  const getNameValue = (e) => {
+    getRecipes(1, e.target.value, searchTag, searchCategory);
+    setSearchString(e.target.value)
+  }
+
+  const getTagValue = (e) => {
+    setSearchTag(e.target.value)
+    getRecipes(1, searchString , e.target.value, searchCategory);
+  }
+
+  const getcategoryValue = (e) => {
+    setSearchCategory(e.target.value)
+    getRecipes(1,searchString, searchTag, e.target.value);
+  }
+
   return (
     <>
       <Header>
@@ -292,7 +319,7 @@ function Recipes() {
                 {
                   tagsList?.map((tag, index) => {
                     return (
-                      <option key={index} value={tag.id}>{tag.id}</option>
+                      <option key={index} value={tag.id}>{tag.name}</option>
                     )
                     // console.log(tag.id);
                   })
@@ -306,8 +333,7 @@ function Recipes() {
                 className=' my-2 form-select'
                 {...register("categoriesIds",
                   {
-                    required: true,
-                    valueAsNumber: true
+                    required: true
                   })} >
 
                 <option value="" selected disabled> select category</option>
@@ -408,7 +434,7 @@ function Recipes() {
                 {
                   tagsList?.map((tag, index) => {
                     return (
-                      <option key={index} value={tag.id}>{tag.id}</option>
+                      <option key={index} value={tag.id}>{tag.name}</option>
                     )
                     // console.log(tag.id);
                   })
@@ -422,9 +448,8 @@ function Recipes() {
                 className=' my-2 form-select'
                 {...register("categoriesIds",
                   {
-                    required: true,
-                    valueAsNumber: true
-                  })} >
+                    required: true
+                                      })} >
 
                 <option value="" selected disabled> select category</option>
 
@@ -478,11 +503,46 @@ function Recipes() {
         </div>
       </div>
 
+      <div className="row my-2 searching">
+        <div className="col-md-4 ">
+          <input type="text" placeholder='Search by Recipe name...' className='form-control'
+            onChange={getNameValue} />
+        </div>
+
+        <div className="col-md-4">
+          <select className='form-select' onChange={getTagValue} >
+            <option value="" selected disabled>select tag</option>
+            {
+              tagsList?.map((tag, index) => {
+                return (
+                  <option key={index} value={tag.id}>{tag.name}</option>
+                )
+              })
+            }
+          </select>
+        </div>
+
+        <div className="col-md-4">
+          <select className='form-select' onChange={getcategoryValue}>
+            <option value="" selected disabled> select category</option>
+            {
+              categoriesList?.map((category, index) => {
+                return (
+                  <option key={index} value={category.id}>{category.name}</option>
+                )
+              })
+            }
+          </select>
+        </div>
+      </div>
+
       {
         recipesList?.length > 0 ?
           <div className="p-4">
-            <table className="table p-4">
-              <thead>
+
+           <div className='table-responsive'>
+           <table className="table table-striped p-4">
+              <thead className='table-light'>
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col">Recipe name</th>
@@ -525,7 +585,26 @@ function Recipes() {
                 }
 
               </tbody>
+
             </table>
+           </div>
+
+            <nav aria-label="..." className='d-flex justify-content-end'>
+              <ul className="pagination pagination-sm">
+                {
+                  pageArray.map((pageNo, index) => {
+                    return (
+                      <li key={index} onClick={() => getRecipes(pageNo, searchString, searchTag, searchCategory)} className="page-item disabled px-0 cursor-pointer">
+                        <a className="page-link">{pageNo}</a>
+                      </li>
+                    )
+                    {/* <li className="page-item px-0"><a className="page-link" href="#">2</a></li> */ }
+
+                  })
+                }
+              </ul>
+            </nav>
+
           </div>
           : <NoData />
       }

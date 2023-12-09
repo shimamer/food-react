@@ -15,26 +15,34 @@ import { toast } from 'react-toastify';
 function Categories() {
 
   const [categoriesList, setCategoriesList] = useState()
+  const [pageArray, setPageArray] = useState()
 
-  const getCategories = () => {
-    axios.get('https://upskilling-egypt.com:443/api/v1/Category/?pageSize=10&pageNumber=1',
+  const getCategories = (pageNo, name) => {
+    axios.get('https://upskilling-egypt.com:443/api/v1/Category/',
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('adminToken')}`
+        },
+        params:{
+          pageSize: 5,
+          pageNumber: pageNo,
+          name: name
         }
       })
       .then((response) => {
+        setPageArray(Array(response.data.totalNumberOfPages).fill().map((_, i) => i + 1))
         setCategoriesList(response.data.data)
       })
       .catch((error) => console.log(error))
   }
 
   useEffect(() => {
-    getCategories()
+    getCategories(1)
   }, [])
 
   const [showState, setShowState] = useState('close');
   const [itemID, setItemID] = useState();
+  const [searchString, setSearchString] = useState();
 
   const handleClose = () => {
     setShowState('close');
@@ -167,6 +175,10 @@ function Categories() {
     })
   }
 
+  const getNameValue = (e) => {
+    setSearchString(e.target.value)
+    getCategories(1,e.target.value);
+  }
   return (
     <>
 
@@ -260,11 +272,14 @@ function Categories() {
         </div>
       </div>
 
-      {
+      <input type="text" placeholder='Search by category name...' className='form-control'
+      onChange={getNameValue} />
+
+      { 
         categoriesList?.length > 0 ?
           <div className="p-4">
-            <table className="table p-4">
-            <thead>
+          <table className="table table-striped p-4">
+            <thead className='table-light'>
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">name</th>
@@ -277,7 +292,7 @@ function Categories() {
                 categoriesList?.map((category, index) => {
                   return (
                     <tr key={index}>
-                      <th scope="row">{category.id}</th>
+                      <th scope="row">{index + 1}</th>
                       <td>{category.name}</td>
                       <td>
                         <MdEditSquare onClick={() => handleShowUpdate(category)} className='text-warning me-2' />
@@ -290,6 +305,23 @@ function Categories() {
 
             </tbody>
           </table>
+
+          <nav aria-label="..." className='d-flex justify-content-end'>
+              <ul className="pagination pagination-sm">
+                {
+                  pageArray.map((pageNo, index) => {
+                    return (
+                      <li key={index} onClick={()=>getCategories(pageNo,searchString)} className="page-item disabled px-0 cursor-pointer">
+                        <a className="page-link">{pageNo}</a>
+                      </li>
+                    )
+                    {/* <li className="page-item px-0"><a className="page-link" href="#">2</a></li> */ }
+
+                  })
+                }
+              </ul>
+          </nav>
+
           </div>
         : <NoData />
       }

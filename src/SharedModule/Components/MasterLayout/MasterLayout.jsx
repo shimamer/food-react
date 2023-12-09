@@ -10,7 +10,7 @@ function MasterLayout({ adminData }) {
     <>
       <div className='container-fluid'>
         <div className="row">
-          <div className="col-md-2 p-0 ">
+          <div className="col-md-2 p-0 bg-base">
             <div>
               <SideBar adminData={adminData} />
             </div>

@@ -28,6 +28,10 @@
     border-bottom-right-radius :2rem
 }
 
+/* .bg-base{
+    background-color:#1F263E !important;
+} */
+
 .sidebar-container .ps-sidebar-root{
     border-top-right-radius :2rem;
     border-bottom-right-radius :2rem
@@ -54,4 +58,7 @@
 }
 .width-img{
     width: 100px;
+}
+.cursor-pointer{
+    cursor: pointer;
 }
