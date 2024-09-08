@@ -21,7 +21,8 @@ function Login({ saveAdminData }) {
 
   const onSubmit = (data) => {
     console.log(data)
-    axios.post("https://upskilling.com:443/api/v1/Users/Login", data)
+    
+    axios.post("https://upskilling-egypt.com:3006/api/v1/Users/Login", data)
       .then((response) => {
         console.log(response.data.token);
         localStorage.setItem("adminToken", response.data.token);
@@ -110,8 +111,9 @@ function Login({ saveAdminData }) {
                   </Link>
 
                  </div>
-
+                 <div className='form-group'>
                   <button className='btn btn-success w-100 mt-3'>Log in</button>
+                  </div>
                 </form>
               </div>
             </div>

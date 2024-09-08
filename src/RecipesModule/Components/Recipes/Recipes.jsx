@@ -28,7 +28,7 @@ function Recipes() {
   } = useForm()
 
   const getRecipes = (pageNo, name, tagId, categoryId) => {
-    axios.get('https://upskilling-egypt.com:443/api/v1/Recipe/',
+    axios.get('https://upskilling-egypt.com:3006/api/v1/Recipe/',
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('adminToken')}`
@@ -50,9 +50,9 @@ function Recipes() {
       .catch((error) => console.log(error))
   }
 
-  const [tagsList, setTagsList] = useState()
+  const [tagsList, setTagsList] = useState([])
   const getTags = () => {
-    axios.get('https://upskilling-egypt.com:443/api/v1/tag/',
+    axios.get('https://upskilling-egypt.com:3006/api/v1/tag/',
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('adminToken')}`
@@ -66,7 +66,7 @@ function Recipes() {
 
   const [categoriesList, setCategoriesList] = useState()
   const getCategories = () => {
-    axios.get('https://upskilling-egypt.com:443/api/v1/Category/',
+    axios.get('https://upskilling-egypt.com:3006/api/v1/Category/',
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('adminToken')}`
@@ -113,7 +113,7 @@ function Recipes() {
   }
 
   const deleteRecipe = () => {
-    axios.delete(`https://upskilling-egypt.com:443/api/v1/Recipe/${itemID}`, {
+    axios.delete(`https://upskilling-egypt.com:3006/api/v1/Recipe/${itemID}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('adminToken')}`
       }
@@ -158,7 +158,7 @@ function Recipes() {
     addFormData.append("tagId", data['tagId'])
     addFormData.append("categoriesIds", data['categoriesIds'])
     console.log(addFormData);
-    axios.post('https://upskilling-egypt.com:443/api/v1/Recipe/', addFormData, {
+    axios.post('https://upskilling-egypt.com:3006/api/v1/Recipe/', addFormData, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('adminToken')}`
       }
@@ -201,7 +201,7 @@ function Recipes() {
   }
 
   const updateRecipe = (data) => {
-    axios.put(`https://upskilling-egypt.com:443/api/v1/Recipe/${itemID}`, data,
+    axios.put(`https://upskilling-egypt.com:3006/api/v1/Recipe/${itemID}`, data,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('adminToken')}`
@@ -316,7 +316,7 @@ function Recipes() {
                     valueAsNumber: true
                   })} >
                 <option value="" selected disabled> select tag</option>
-                {
+                {tagsList &&
                   tagsList?.map((tag, index) => {
                     return (
                       <option key={index} value={tag.id}>{tag.name}</option>
@@ -565,7 +565,7 @@ function Recipes() {
                         <td scope="col">
                           {
                             Recipe.imagePath ? <img className='width-img'
-                              src={`https://upskilling-egypt.com/` + Recipe?.imagePath}
+                              src={`https://upskilling-egypt.com:3006/` + Recipe?.imagePath}
                               alt="" /> : <img className='width-img'
                                 src={noData}
                                 alt="" />

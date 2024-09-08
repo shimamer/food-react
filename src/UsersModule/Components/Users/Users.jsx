@@ -7,6 +7,7 @@ import axios from 'axios'
 import { MdDelete } from "react-icons/md";
 import Modal from 'react-bootstrap/Modal';
 import { ModalBody } from 'react-bootstrap'
+import { toast } from 'react-toastify'
 
 function Users() {
 
@@ -18,16 +19,16 @@ function Users() {
   const [searchEmail, setSearchEmail] = useState();
 
   const getUsers = (pageNo, name, email) => {
-    axios.get('https://upskilling-egypt.com:443/api/v1/Users/',
+    axios.get('https://upskilling-egypt.com:3006/api/v1/Users/',
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('adminToken')}`
         },
         params: {
+          email: email,
           pageSize: 10,
           pageNumber: pageNo,
-          userName: name,
-          email: email
+          userName: name
         }
       })
       .then((response) => {
@@ -52,7 +53,7 @@ function Users() {
   }
 
   const deleteUser = () => {
-    axios.delete(`https://upskilling-egypt.com:443/api/v1/Users/${itemID}`, {
+    axios.delete(`https://upskilling-egypt.com:3006/api/v1/Users/${itemID}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('adminToken')}`
       }
@@ -93,7 +94,7 @@ function Users() {
 
   const getEmailValue = (e) => {
     setSearchEmail(e.target.value)
-    getUsers(1, null, e.target.value);
+    getUsers(1, searchUser, e.target.value);
   }
   
   return (
@@ -169,13 +170,13 @@ function Users() {
                   usersList?.map((user, index) => {
                     return (
                       <tr key={index}>
-                        <th scope="row">{index + 1}</th>
+                        <th scope="row">{user.id}</th>
                         <td>{user.userName}</td>
                         <td scope="col">
                           {
                             user.imagePath
                               ? <img className='width-img'
-                                src={`https://upskilling-egypt.com/` + user?.imagePath}
+                                src={`https://upskilling-egypt.com:3006/` + user?.imagePath}
                                 alt="" />
                               : <img className='width-img'
                                 src={noData}

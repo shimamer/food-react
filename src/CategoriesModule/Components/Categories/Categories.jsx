@@ -18,7 +18,7 @@ function Categories() {
   const [pageArray, setPageArray] = useState()
 
   const getCategories = (pageNo, name) => {
-    axios.get('https://upskilling-egypt.com:443/api/v1/Category/',
+    axios.get('https://upskilling-egypt.com:3006/api/v1/Category/',
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('adminToken')}`
@@ -62,7 +62,7 @@ function Categories() {
   }
 
   const deleteCategory = () => {
-    axios.delete(`https://upskilling-egypt.com:443/api/v1/Category/${itemID}`, {
+    axios.delete(`https://upskilling-egypt.com:3006/api/v1/Category/${itemID}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('adminToken')}`
       }
@@ -105,7 +105,7 @@ function Categories() {
 
   const onSubmit = (data) => {
     console.log(data);
-    axios.post('https://upskilling-egypt.com:443/api/v1/Category/', data, {
+    axios.post('https://upskilling-egypt.com:3006/api/v1/Category/', data, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('adminToken')}`
       }
@@ -141,7 +141,7 @@ function Categories() {
   }
 
   const updateCategory = (data) => {
-    axios.put(`https://upskilling-egypt.com:443/api/v1/Category/${itemID}`, data,
+    axios.put(`https://upskilling-egypt.com:3006/api/v1/Category/${itemID}`, data,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('adminToken')}`

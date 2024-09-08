@@ -41,9 +41,11 @@ function App() {
   const routes = createBrowserRouter([
     {
       path: "dashboard",
-      element: <ProtectedRoute adminData={adminData} >
+      element: 
+      // <ProtectedRoute adminData={adminData} >
         <MasterLayout adminData={adminData} />
-      </ProtectedRoute>,
+      // </ProtectedRoute>
+      ,
       errorElement: <NotFound />,
       children: [
         { index: true, element: <Home /> },
@@ -59,7 +61,7 @@ function App() {
       element:
         // <ProtectedRoute adminData={adminData}>
         <AuthLayout />
-      // </ProtectedRoute>
+      //  </ProtectedRoute>
       ,
       errorElement: <NotFound />,
       children: [
