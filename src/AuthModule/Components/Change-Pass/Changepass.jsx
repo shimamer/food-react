@@ -18,7 +18,7 @@ function Changepass({handleClose}) {
   const onSubmit = (data) => {
     console.log(data);
     console.log(localStorage.getItem('adminToken'))
-    axios.put("https://upskilling.com:3002/api/v1/Users/changePassword", data,
+    axios.put("https://upskilling-egypt.com:3006/api/v1/Users/changePassword", data,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('adminToken')}`
